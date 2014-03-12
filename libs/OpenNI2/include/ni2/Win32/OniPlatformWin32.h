@@ -29,7 +29,7 @@
 #endif
 #ifndef _WIN32_WINNT				// Allow use of features specific to Windows XP or later
 	#define _WIN32_WINNT 0x0501
-#endif						
+#endif
 #ifndef _WIN32_WINDOWS				// Allow use of features specific to Windows 98 or later
 	#define _WIN32_WINDOWS 0x0410
 #endif
@@ -39,7 +39,7 @@
 #define WIN32_LEAN_AND_MEAN			// Exclude rarely-used stuff from Windows headers
 
 // Undeprecate CRT functions
-#ifndef _CRT_SECURE_NO_DEPRECATE 
+#ifndef _CRT_SECURE_NO_DEPRECATE
 	#define _CRT_SECURE_NO_DEPRECATE 1
 #endif
 
@@ -54,7 +54,9 @@
 #include <time.h>
 #include <assert.h>
 #include <float.h>
+#ifndef __MINGW32_VERSION // MingW32 (added brunoimbrizi 07/03/2014)
 #include <crtdbg.h>
+#endif
 #if _MSC_VER < 1600 // Visual Studio 2008 and older doesn't have stdint.h...
 typedef __int64 int64_t;
 typedef unsigned __int64 uint64_t;
@@ -78,7 +80,7 @@ typedef unsigned __int64 uint64_t;
 //---------------------------------------------------------------------------
 // Memory
 //---------------------------------------------------------------------------
-/** The default memory alignment. */ 
+/** The default memory alignment. */
 #define ONI_DEFAULT_MEM_ALIGN 16
 
 /** The thread static declarator (using TLS). */
@@ -87,16 +89,16 @@ typedef unsigned __int64 uint64_t;
 //---------------------------------------------------------------------------
 // Files
 //---------------------------------------------------------------------------
-/** The maximum allowed file path size (in bytes). */ 
+/** The maximum allowed file path size (in bytes). */
 #define ONI_FILE_MAX_PATH MAX_PATH
 
 //---------------------------------------------------------------------------
 // Call backs
 //---------------------------------------------------------------------------
-/** The std call type. */ 
+/** The std call type. */
 #define ONI_STDCALL __stdcall
 
-/** The call back calling convention. */ 
+/** The call back calling convention. */
 #define ONI_CALLBACK_TYPE ONI_STDCALL
 
 /** The C and C++ calling convension. */
@@ -105,20 +107,20 @@ typedef unsigned __int64 uint64_t;
 //---------------------------------------------------------------------------
 // Macros
 //---------------------------------------------------------------------------
-/** Returns the date and time at compile time. */ 
+/** Returns the date and time at compile time. */
 #define ONI_TIMESTAMP __DATE__ " " __TIME__
 
-/** Converts n into a pre-processor string.  */ 
+/** Converts n into a pre-processor string.  */
 #define ONI_STRINGIFY(n) ONI_STRINGIFY_HELPER(n)
 #define ONI_STRINGIFY_HELPER(n) #n
 
 //---------------------------------------------------------------------------
 // API Export/Import Macros
 //---------------------------------------------------------------------------
-/** Indicates an exported shared library function. */ 
+/** Indicates an exported shared library function. */
 #define ONI_API_EXPORT __declspec(dllexport)
 
-/** Indicates an imported shared library function. */ 
+/** Indicates an imported shared library function. */
 #define ONI_API_IMPORT __declspec(dllimport)
 
 /** Indicates a deprecated function */

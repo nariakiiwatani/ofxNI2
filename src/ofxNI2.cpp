@@ -26,11 +26,13 @@ namespace ofxNI2
 
 		// initialize oF path, don't comment out
 		ofToDataPath(".");
-		
+
 		if (ofFile::doesFileExist("Drivers", false))
 		{
 			string path = "Drivers";
+			#ifndef __MINGW32_VERSION // MingW32 (added brunoimbrizi 07/03/2014)
 			setenv("OPENNI2_DRIVERS_PATH", path.c_str(), 1);
+			#endif
 			assert_error(openni::OpenNI::initialize());
 		}
 		else
@@ -48,15 +50,15 @@ using namespace ofxNI2;
 int Device::listDevices()
 {
 	ofxNI2::init();
-	
+
 	openni::Array<openni::DeviceInfo> deviceList;
 	openni::OpenNI::enumerateDevices(&deviceList);
-	
+
 	for (int i = 0; i < deviceList.getSize(); ++i)
 	{
 		printf("[%d] %s [%s] (%s)\n", i, deviceList[i].getName(), deviceList[i].getVendor(), deviceList[i].getUri());
 	}
-	
+
 	return deviceList.getSize();
 }
 
@@ -71,57 +73,57 @@ Device::~Device()
 bool Device::setup()
 {
 	ofxNI2::init();
-	
+
 	if (!check_error(device.open(openni::ANY_DEVICE))) return false;
 	if (!check_error(device.setDepthColorSyncEnabled(true))) return false;
-	
+
 	return true;
 }
 
 bool Device::setup(int device_id)
 {
 	ofxNI2::init();
-	
+
 	openni::Array<openni::DeviceInfo> deviceList;
 	openni::OpenNI::enumerateDevices(&deviceList);
-	
+
 	if (device_id < 0
 		|| device_id >= deviceList.getSize())
 	{
 		ofLogFatalError("ofxNI2::Device") << "invalid device id";
-		
+
 		listDevices();
-		
+
 		return false;
 	}
-	
+
 	if (!check_error(device.open(deviceList[device_id].getUri()))) return false;
 	if (!check_error(device.setDepthColorSyncEnabled(true))) return false;
-	
+
 	return true;
 }
 
 bool Device::setup(string oni_file_path)
 {
 	ofxNI2::init();
-	
+
 	oni_file_path = ofToDataPath(oni_file_path);
-	
+
 	assert_error(device.open(oni_file_path.c_str()));
 	assert_error(device.setDepthColorSyncEnabled(true));
-	
+
 	return true;
 }
 
 void Device::exit()
 {
 	if (!device.isValid()) return;
-	
+
 	stopRecord();
-	
+
 	for (int i = 0; i < streams.size(); i++)
 		streams[i]->exit();
-	
+
 	streams.clear();
 }
 
@@ -133,7 +135,7 @@ void Device::update()
 		s->is_frame_new = s->openni_timestamp != s->opengl_timestamp;
 		s->opengl_timestamp = s->openni_timestamp;
 	}
-	
+
 	static ofEventArgs e;
 	ofNotifyEvent(updateDevice, e, this);
 }
@@ -161,18 +163,18 @@ bool Device::startRecord(string filename, bool allowLossyCompression)
 		filename = ofToString(time(0)) + ".oni";
 
 	ofLogVerbose("ofxNI2") << "recording started: " << filename;
-	
+
 	filename = ofToDataPath(filename);
-	
+
 	recorder = new openni::Recorder;
 	recorder->create(filename.c_str());
-	
+
 	for (int i = 0; i < streams.size(); i++)
 	{
 		ofxNI2::Stream &s = *streams[i];
 		recorder->attach(s.get(), allowLossyCompression);
 	}
-	
+
 	recorder->start();
 	return recorder->isValid();
 }
@@ -180,10 +182,10 @@ bool Device::startRecord(string filename, bool allowLossyCompression)
 void Device::stopRecord()
 {
 	if (!recorder) return;
-	
+
 	recorder->stop();
 	recorder->destroy();
-	
+
 	delete recorder;
 	recorder = NULL;
 }
@@ -197,17 +199,17 @@ bool Stream::setup(ofxNI2::Device &device, openni::SensorType sensor_type)
 {
 	openni_timestamp = 0;
 	opengl_timestamp = 0;
-	
+
 	check_error(stream.create(device, sensor_type));
 	if (!stream.isValid()) return false;
-	
+
 	device.streams.push_back(this);
 	this->device = &device;
-	
+
 	setMirror(false);
-	
+
 	stream.addNewFrameListener(this);
-	
+
 	return true;
 }
 
@@ -236,9 +238,9 @@ void Stream::onNewFrame(openni::VideoStream&)
 	openni::VideoFrameRef frame;
 	check_error(stream.readFrame(&frame));
 	setPixels(frame);
-	
+
 	openni_timestamp = frame.getTimestamp();
-	
+
 	texture_needs_update = true;
 }
 
@@ -247,12 +249,12 @@ bool Stream::setSize(int width, int height)
 	openni::VideoMode m = stream.getVideoMode();
 	m.setResolution(width, height);
 	openni::Status rc = stream.setVideoMode(m);
-	
+
 	if (rc == openni::STATUS_OK)
 	{
 		return true;
 	}
-	
+
 	check_error(rc);
 	return false;
 }
@@ -287,12 +289,12 @@ bool Stream::setFps(int v)
 	openni::VideoMode m = stream.getVideoMode();
 	m.setFps(v);
 	openni::Status rc = stream.setVideoMode(m);
-	
+
 	if (rc == openni::STATUS_OK)
 	{
 		return true;
 	}
-	
+
 	check_error(rc);
 	return false;
 }
@@ -337,13 +339,13 @@ void Stream::draw(float x, float y, float w, float h)
 void IrStream::setPixels(openni::VideoFrameRef frame)
 {
 	Stream::setPixels(frame);
-	
+
 	openni::VideoMode m = frame.getVideoMode();
-	
+
 	int w = m.getResolutionX();
 	int h = m.getResolutionY();
 	int num_pixels = w * h;
-	
+
 	pix.allocate(w, h, 1);
 
 	if (m.getPixelFormat() == openni::PIXEL_FORMAT_GRAY8)
@@ -370,7 +372,7 @@ void IrStream::setPixels(openni::VideoFrameRef frame)
 			dst++;
 		}
 	}
-	
+
 	pix.swap();
 }
 
@@ -382,7 +384,7 @@ void IrStream::updateTextureIfNeeded()
 	{
 		tex.allocate(getWidth(), getHeight(), GL_LUMINANCE);
 	}
-	
+
 	tex.loadData(pix.getFrontBuffer());
 	Stream::updateTextureIfNeeded();
 }
@@ -392,20 +394,20 @@ void IrStream::updateTextureIfNeeded()
 void ColorStream::setPixels(openni::VideoFrameRef frame)
 {
 	Stream::setPixels(frame);
-	
+
 	openni::VideoMode m = frame.getVideoMode();
-	
+
 	int w = m.getResolutionX();
 	int h = m.getResolutionY();
 	int num_pixels = w * h;
-	
+
 	pix.allocate(w, h, 3);
-	
+
 	if (m.getPixelFormat() == openni::PIXEL_FORMAT_RGB888)
 	{
 		const unsigned char *src = (const unsigned char*)frame.getData();
 		unsigned char *dst = pix.getBackBuffer().getPixels();
-		
+
 		for (int i = 0; i < num_pixels; i++)
 		{
 			dst[0] = src[0];
@@ -415,7 +417,7 @@ void ColorStream::setPixels(openni::VideoFrameRef frame)
 			dst += 3;
 		}
 	}
-	
+
 	pix.swap();
 }
 
@@ -427,7 +429,7 @@ void ColorStream::updateTextureIfNeeded()
 	{
 		tex.allocate(getWidth(), getHeight(), GL_RGB);
 	}
-	
+
 	tex.loadData(pix.getFrontBuffer());
 	Stream::updateTextureIfNeeded();
 }
@@ -444,12 +446,12 @@ bool DepthStream::setup(ofxNI2::Device &device)
 void DepthStream::setPixels(openni::VideoFrameRef frame)
 {
 	Stream::setPixels(frame);
-	
+
 	const unsigned short *pixels = (const unsigned short*)frame.getData();
 	int w = frame.getVideoMode().getResolutionX();
 	int h = frame.getVideoMode().getResolutionY();
 	int num_pixels = w * h;
-	
+
 	pix.allocate(w, h, 1);
 	pix.getBackBuffer().setFromPixels(pixels, w, h, OF_IMAGE_GRAYSCALE);
 	pix.swap();
@@ -463,12 +465,12 @@ void DepthStream::updateTextureIfNeeded()
 	{
 #if OF_VERSION_MINOR <= 7
 		static ofTextureData data;
-		
+
 		data.pixelType = GL_UNSIGNED_SHORT;
 		data.glTypeInternal = GL_LUMINANCE16;
 		data.width = getWidth();
 		data.height = getHeight();
-		
+
 		tex.allocate(data);
 #elif OF_VERSION_MINOR > 7
 		tex.allocate(getWidth(), getHeight(), GL_RGBA, true, GL_LUMINANCE, GL_UNSIGNED_SHORT);
@@ -511,11 +513,11 @@ void DepthShader::setup(DepthStream &depth)
 ofVec3f DepthStream::getWorldCoordinateAt(int x, int y)
 {
 	ofVec3f v;
-	
+
 	const ofShortPixels& pix = getPixelsRef();
 	const unsigned short *ptr = pix.getPixels();
 	unsigned short z = ptr[pix.getWidth() * y + x];
-	
+
 	openni::CoordinateConverter::convertDepthToWorld(stream, x, y, z, &v.x, &v.y, &v.z);
 
 	return v;
@@ -524,7 +526,7 @@ ofVec3f DepthStream::getWorldCoordinateAt(int x, int y)
 string Grayscale::getShaderCode() const
 {
 #define _S(src) #src
-	
+
 	const char *fs = _S(
 		uniform sampler2DRect tex;
 		uniform float near_value;
@@ -533,21 +535,21 @@ string Grayscale::getShaderCode() const
 		void main()
 		{
 			float c = texture2DRect(tex, gl_TexCoord[0].xy).r;
-			
+
 			c = (near_value >= far_value) ? 0. : clamp((c-near_value)/(far_value-near_value), 0., 1.);
-			
+
 			gl_FragColor = gl_Color * vec4(c, c, c, 1.);
 		}
 	);
 #undef _S
-	
+
 	return fs;
 }
 
 void Grayscale::begin()
 {
 	const float dd = 1. / numeric_limits<unsigned short>::max();
-	
+
 	DepthShader::begin();
 	setUniform1f("near_value", dd * near_value);
 	setUniform1f("far_value", dd * far_value);

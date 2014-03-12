@@ -29,11 +29,13 @@
 #define ONI_PLATFORM_ANDROID_ARM 5
 
 #if (defined _WIN32)
+#ifndef __MINGW32_VERSION // MingW32 (added brunoimbrizi 07/03/2014)
 #	ifndef RC_INVOKED
 #		if _MSC_VER < 1300
 #			error OpenNI Platform Abstraction Layer - Win32 - Microsoft Visual Studio version below 2003 (7.0) are not supported!
 #		endif
 #	endif
+# endif
 #	include "Win32/OniPlatformWin32.h"
 #elif defined (ANDROID) && defined (__arm__)
 #	include "Android-Arm/OniPlatformAndroid-Arm.h"
