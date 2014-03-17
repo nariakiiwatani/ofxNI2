@@ -16,3 +16,8 @@ project.xcworkspace
 ipch/
 obj/
 *.sdf
+
+# codeblocks
+obj
+*.depend
+*.layout
