@@ -527,7 +527,7 @@ string Grayscale::getShaderCode() const
 {
 #define _S(src) #src
 
-	const char *fs = _S(
+	const char *fs = "#extension GL_ARB_texture_rectangle : enable\n" _S(
 		uniform sampler2DRect tex;
 		uniform float near_value;
 		uniform float far_value;
