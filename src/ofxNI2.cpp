@@ -481,10 +481,10 @@ void DepthStream::updateTextureIfNeeded()
 	Stream::updateTextureIfNeeded();
 }
 
-ofPixels DepthStream::getPixelsRef(int near, int far, bool invert)
+ofPixels DepthStream::getPixelsRef(int _near, int _far, bool invert)
 {
 	ofPixels pix;
-	depthRemapToRange(getPixelsRef(), pix, near, far, invert);
+	depthRemapToRange(getPixelsRef(), pix, _near, _far, invert);
 	return pix;
 }
 
