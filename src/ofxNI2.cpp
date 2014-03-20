@@ -27,10 +27,10 @@ namespace ofxNI2
 		// initialize oF path, don't comment out
 		ofToDataPath(".");
 
-		if (ofFile::doesFileExist("Drivers", false))
+		if (ofFile::doesFileExist("OpenNI2/Drivers", false))
 		{
-			string path = "Drivers";
-			#ifndef __MINGW32_VERSION // MingW32 (added brunoimbrizi 07/03/2014)
+			string path = "OpenNI2/Drivers";
+			#ifndef __MINGW32_VERSION
 			setenv("OPENNI2_DRIVERS_PATH", path.c_str(), 1);
 			#endif
 			assert_error(openni::OpenNI::initialize());
