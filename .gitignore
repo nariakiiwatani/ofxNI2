@@ -1,7 +1,8 @@
 .DS_Store
 
-example-user-tracker/bin/
 *.cscope_file_list
 *.depend
 *.layout
 example/bin/
+example-assimp-model/bin/
+example-user-tracker/bin/
