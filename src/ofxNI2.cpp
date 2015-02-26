@@ -442,6 +442,22 @@ void ColorStream::updateTextureIfNeeded()
 	Stream::updateTextureIfNeeded();
 }
 
+bool ColorStream::setAutoExposureEnabled(bool yn)
+{
+	return check_error(stream.getCameraSettings()->setAutoExposureEnabled(yn));
+}
+bool ColorStream::setExposure(int exposure)
+{
+	return check_error(stream.getCameraSettings()->setExposure(exposure));
+}
+bool ColorStream::setAutoWhiteBalanceEnabled(bool yn)
+{
+	return check_error(stream.getCameraSettings()->setAutoWhiteBalanceEnabled(yn));
+}
+bool ColorStream::setGain(int gain)
+{
+	return check_error(stream.getCameraSettings()->setGain(gain));
+}
 
 #pragma mark - DepthStream
 

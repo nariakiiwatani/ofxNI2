@@ -166,11 +166,13 @@ public:
 	void updateTextureIfNeeded();
 
 	ofPixels& getPixelsRef() { return pix.getFrontBuffer(); }
-	void setAutoExposureEnabled(bool yn = true) { stream.getCameraSettings()->setAutoExposureEnabled(yn); }
+	bool setAutoExposureEnabled(bool yn = true);
 	bool getAutoExposureEnabled() { return stream.getCameraSettings()->getAutoExposureEnabled(); }
+	bool setExposure(int exposure);
 
-	void setAutoWhiteBalanceEnabled(bool yn = true) { stream.getCameraSettings()->setAutoWhiteBalanceEnabled(yn); }
+	bool setAutoWhiteBalanceEnabled(bool yn = true);
 	bool getAutoWhiteBalanceEnabled() { return stream.getCameraSettings()->getAutoWhiteBalanceEnabled(); }
+	bool setGain(int gain);
 
 protected:
 
