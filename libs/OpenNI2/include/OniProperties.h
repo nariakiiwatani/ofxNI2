@@ -18,55 +18,56 @@
 *  limitations under the License.                                            *
 *                                                                            *
 *****************************************************************************/
-#ifndef _ONI_PLATFORM_H_
-#define _ONI_PLATFORM_H_
+#ifndef _ONI_PROPERTIES_H_
+#define _ONI_PROPERTIES_H_
 
-// Supported platforms
-#define ONI_PLATFORM_WIN32 1
-#define ONI_PLATFORM_LINUX_X86 2
-#define ONI_PLATFORM_LINUX_ARM 3
-#define ONI_PLATFORM_MACOSX 4
-#define ONI_PLATFORM_ANDROID_ARM 5
+namespace openni
+{
 
-#if (defined _WIN32)
-#	ifndef RC_INVOKED
-#		if _MSC_VER < 1300
-#			error OpenNI Platform Abstraction Layer - Win32 - Microsoft Visual Studio version below 2003 (7.0) are not supported!
-#		endif
-#	endif
-#	include "Win32/OniPlatformWin32.h"
-#elif defined (ANDROID) && defined (__arm__)
-#	include "Android-Arm/OniPlatformAndroid-Arm.h"
-#elif (linux && (i386 || __x86_64__))
-#	include "Linux-x86/OniPlatformLinux-x86.h"
-#elif (linux && __arm__)
-#	include "Linux-Arm/OniPlatformLinux-Arm.h"
-#elif _ARC
-#	include "ARC/OniPlaformARC.h"
-#elif (__APPLE__)
-#	include "MacOSX/OniPlatformMacOSX.h"
-#else
-#	error Xiron Platform Abstraction Layer - Unsupported Platform!
-#endif
+// Device properties
+enum
+{
+	DEVICE_PROPERTY_FIRMWARE_VERSION		= 0, // string
+	DEVICE_PROPERTY_DRIVER_VERSION			= 1, // OniVersion
+	DEVICE_PROPERTY_HARDWARE_VERSION		= 2, // int
+	DEVICE_PROPERTY_SERIAL_NUMBER			= 3, // string
+	DEVICE_PROPERTY_ERROR_STATE			= 4, // ??
+	DEVICE_PROPERTY_IMAGE_REGISTRATION		= 5, // OniImageRegistrationMode
 
-#ifdef __cplusplus
-#	define ONI_C extern "C"
-#	define ONI_C_API_EXPORT ONI_C ONI_API_EXPORT
-#	define ONI_C_API_IMPORT ONI_C ONI_API_IMPORT
-#	define ONI_CPP_API_EXPORT ONI_API_EXPORT
-#	define ONI_CPP_API_IMPORT ONI_API_IMPORT
-#else // __cplusplus
-#	define ONI_C_API_EXPORT ONI_API_EXPORT
-#	define ONI_C_API_IMPORT ONI_API_IMPORT
-#endif  // __cplusplus
+	// Files
+	DEVICE_PROPERTY_PLAYBACK_SPEED			= 100, // float
+	DEVICE_PROPERTY_PLAYBACK_REPEAT_ENABLED		= 101, // OniBool
+};
 
-#ifdef OPENNI2_EXPORT
-#	define ONI_C_API ONI_C_API_EXPORT
-#	define ONI_CPP_API ONI_CPP_API_EXPORT
-#else // OPENNI2_EXPORT
-#	define ONI_C_API ONI_C_API_IMPORT
-#	define ONI_CPP_API ONI_CPP_API_IMPORT
-#endif // OPENNI2_EXPORT
+// Stream properties
+enum
+{
+	STREAM_PROPERTY_CROPPING			= 0, // OniCropping*
+	STREAM_PROPERTY_HORIZONTAL_FOV			= 1, // float: radians
+	STREAM_PROPERTY_VERTICAL_FOV			= 2, // float: radians
+	STREAM_PROPERTY_VIDEO_MODE			= 3, // OniVideoMode*
 
+	STREAM_PROPERTY_MAX_VALUE			= 4, // int
+	STREAM_PROPERTY_MIN_VALUE			= 5, // int
 
-#endif // _ONI_PLATFORM_H_
+	STREAM_PROPERTY_STRIDE				= 6, // int
+	STREAM_PROPERTY_MIRRORING			= 7, // OniBool
+
+	STREAM_PROPERTY_NUMBER_OF_FRAMES		= 8, // int
+
+	// Camera
+	STREAM_PROPERTY_AUTO_WHITE_BALANCE		= 100, // OniBool
+	STREAM_PROPERTY_AUTO_EXPOSURE			= 101, // OniBool
+	STREAM_PROPERTY_EXPOSURE				= 102, // int
+	STREAM_PROPERTY_GAIN					= 103, // int
+
+};
+
+// Device commands (for Invoke)
+enum
+{
+	DEVICE_COMMAND_SEEK				= 1, // OniSeek
+};
+
+} // namespace openni
+#endif // _ONI_PROPERTIES_H_

@@ -18,49 +18,26 @@
 *  limitations under the License.                                            *
 *                                                                            *
 *****************************************************************************/
-#ifndef _ONI_C_PROPERTIES_H_
-#define _ONI_C_PROPERTIES_H_
+#include "OniPlatform.h"
 
-// Device properties
-enum
-{
-	ONI_DEVICE_PROPERTY_FIRMWARE_VERSION		= 0, // By implementation
-	ONI_DEVICE_PROPERTY_DRIVER_VERSION		= 1, // OniVersion
-	ONI_DEVICE_PROPERTY_HARDWARE_VERSION		= 2, // int
-	ONI_DEVICE_PROPERTY_SERIAL_NUMBER		= 3, // string
-	ONI_DEVICE_PROPERTY_ERROR_STATE			= 4, // ??
-	ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION		= 5, // OniImageRegistrationMode
+#define ONI_VERSION_MAJOR	2
+#define ONI_VERSION_MINOR	2
+#define ONI_VERSION_MAINTENANCE	0
+#define ONI_VERSION_BUILD	33
 
-	// Files
-	ONI_DEVICE_PROPERTY_PLAYBACK_SPEED		= 100, // float
-	ONI_DEVICE_PROPERTY_PLAYBACK_REPEAT_ENABLED			= 101, // OniBool
-};
+/** OpenNI version (in brief string format): "Major.Minor.Maintenance (Build)" */ 
+#define ONI_BRIEF_VERSION_STRING \
+	ONI_STRINGIFY(ONI_VERSION_MAJOR) "." \
+	ONI_STRINGIFY(ONI_VERSION_MINOR) "." \
+	ONI_STRINGIFY(ONI_VERSION_MAINTENANCE) \
+	" (Build " ONI_STRINGIFY(ONI_VERSION_BUILD) ")"
 
-// Stream properties
-enum
-{
-	ONI_STREAM_PROPERTY_CROPPING			= 0, // OniCropping*
-	ONI_STREAM_PROPERTY_HORIZONTAL_FOV		= 1, // float: radians
-	ONI_STREAM_PROPERTY_VERTICAL_FOV		= 2, // float: radians
-	ONI_STREAM_PROPERTY_VIDEO_MODE			= 3, // OniVideoMode*
+/** OpenNI version (in numeric format): (OpenNI major version * 100000000 + OpenNI minor version * 1000000 + OpenNI maintenance version * 10000 + OpenNI build version). */
+#define ONI_VERSION (ONI_VERSION_MAJOR*100000000 + ONI_VERSION_MINOR*1000000 + ONI_VERSION_MAINTENANCE*10000 + ONI_VERSION_BUILD)
+#define ONI_CREATE_API_VERSION(major, minor) ((major)*1000 + (minor))
+#define ONI_API_VERSION ONI_CREATE_API_VERSION(ONI_VERSION_MAJOR, ONI_VERSION_MINOR)
 
-	ONI_STREAM_PROPERTY_MAX_VALUE			= 4, // int
-	ONI_STREAM_PROPERTY_MIN_VALUE			= 5, // int
-
-	ONI_STREAM_PROPERTY_STRIDE			= 6, // int
-	ONI_STREAM_PROPERTY_MIRRORING			= 7, // OniBool
-
-	ONI_STREAM_PROPERTY_NUMBER_OF_FRAMES		= 8, // int
-
-	// Camera
-	ONI_STREAM_PROPERTY_AUTO_WHITE_BALANCE		= 100, // OniBool
-	ONI_STREAM_PROPERTY_AUTO_EXPOSURE			= 101, // OniBool
-};
-
-// Device commands (for Invoke)
-enum
-{
-	ONI_DEVICE_COMMAND_SEEK				= 1, // OniSeek
-};
-
-#endif // _ONI_C_PROPERTIES_H_
+/** OpenNI version (in string format): "Major.Minor.Maintenance.Build-Platform (MMM DD YYYY HH:MM:SS)". */ 
+#define ONI_VERSION_STRING \
+	ONI_BRIEF_VERSION_STRING  "-" \
+	ONI_PLATFORM_STRING " (" ONI_TIMESTAMP ")"

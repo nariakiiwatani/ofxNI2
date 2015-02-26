@@ -13,30 +13,30 @@ void testApp::setup()
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 	ofBackground(0);
-	
+
 	device = new ofxNI2::Device;
 	device->setup();
-	
+
 	if (depth.setup(*device))
 	{
-		depth.setSize(320, 240);
+		depth.setSize(640, 480);
 		depth.setFps(30);
 		depth.start();
 	}
 
-	if (ir.setup(*device)) // only for xtion device (OpenNI2-FreenectDriver issue)
-	{
-		ir.setSize(320, 240);
-		ir.setFps(30);
-		ir.start();
-	}
-	
-//	if (color.setup(*device)) // only for kinect device
+//	if (ir.setup(*device)) // only for xtion device (OpenNI2-FreenectDriver issue)
 //	{
-//		color.setSize(320, 240);
-//		color.setFps(60);
-//		color.start();
+//		ir.setSize(320, 240);
+//		ir.setFps(30);
+//		ir.start();
 //	}
+
+	if (color.setup(*device)) // only for kinect device
+	{
+		color.setSize(640, 480);
+		color.setFps(60);
+		color.start();
+	}
 }
 
 void testApp::exit()
@@ -54,8 +54,8 @@ void testApp::update()
 void testApp::draw()
 {
 	ir.draw();
-//	color.draw();
-	depth.draw(320, 0);
+	color.draw();
+	depth.draw(640, 0);
 }
 
 //--------------------------------------------------------------

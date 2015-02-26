@@ -18,25 +18,26 @@
 *  limitations under the License.                                            *
 *                                                                            *
 *****************************************************************************/
-#include "OniPlatform.h"
+#ifndef _ONI_PLATFORM_ANDROID_ARM_H_
+#define _ONI_PLATFORM_ANDROID_ARM_H_
 
-#define ONI_VERSION_MAJOR	2
-#define ONI_VERSION_MINOR	1
-#define ONI_VERSION_MAINTENANCE	0
-#define ONI_VERSION_BUILD	4
+// Start with Linux-x86, and override what's different
+#include "../Linux-x86/OniPlatformLinux-x86.h"
 
-/** OpenNI version (in brief string format): "Major.Minor.Maintenance (Build)" */ 
-#define ONI_BRIEF_VERSION_STRING \
-	ONI_STRINGIFY(ONI_VERSION_MAJOR) "." \
-	ONI_STRINGIFY(ONI_VERSION_MINOR) "." \
-	ONI_STRINGIFY(ONI_VERSION_MAINTENANCE) \
-	" (Build " ONI_STRINGIFY(ONI_VERSION_BUILD) ")"
+//---------------------------------------------------------------------------
+// Platform Basic Definition
+//---------------------------------------------------------------------------
+#undef ONI_PLATFORM
+#undef ONI_PLATFORM_STRING
 
-/** OpenNI version (in numeric format): (OpenNI major version * 100000000 + OpenNI minor version * 1000000 + OpenNI maintenance version * 10000 + OpenNI build version). */
-#define ONI_VERSION (ONI_VERSION_MAJOR*100000000 + ONI_VERSION_MINOR*1000000 + ONI_VERSION_MAINTENANCE*10000 + ONI_VERSION_BUILD)
-#define ONI_API_VERSION (ONI_VERSION_MAJOR*1000 + ONI_VERSION_MINOR)
+#define ONI_PLATFORM ONI_PLATFORM_ANDROID_ARM
+#define ONI_PLATFORM_STRING "Android-Arm"
 
-/** OpenNI version (in string format): "Major.Minor.Maintenance.Build-Platform (MMM DD YYYY HH:MM:SS)". */ 
-#define ONI_VERSION_STRING \
-	ONI_BRIEF_VERSION_STRING  "-" \
-	ONI_PLATFORM_STRING " (" ONI_TIMESTAMP ")"
+#ifdef HAVE_ANDROID_OS
+	#define ONI_PLATFORM_ANDROID_OS
+	
+	#undef ONI_PLATFORM_STRING
+	#define ONI_PLATFORM_STRING "AndroidOS-Arm"
+#endif
+
+#endif //_ONI_PLATFORM_LINUX_ARM_H_

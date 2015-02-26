@@ -18,35 +18,69 @@
 *  limitations under the License.                                            *
 *                                                                            *
 *****************************************************************************/
-#ifndef _ONI_DRIVER_TYPES_H_
-#define _ONI_DRIVER_TYPES_H_
+#ifndef _ONI_ENUMS_H_
+#define _ONI_ENUMS_H_
 
-#include <OniCTypes.h>
-#include <stdarg.h>
-
-#define ONI_STREAM_PROPERTY_PRIVATE_BASE XN_MAX_UINT16
-
-typedef struct
+namespace openni
 {
-	int dataSize;
-	void* data;
-} OniGeneralBuffer;
 
-typedef struct
+/** Possible failure values */
+typedef enum
 {
-	OniFrame frame;
-	void* pDriverCookie;
-	void* pOpenNICookie;
-} OniDriverFrame;
+	STATUS_OK = 0,
+	STATUS_ERROR = 1,
+	STATUS_NOT_IMPLEMENTED = 2,
+	STATUS_NOT_SUPPORTED = 3,
+	STATUS_BAD_PARAMETER = 4,
+	STATUS_OUT_OF_FLOW = 5,
+	STATUS_NO_DEVICE = 6,
+	STATUS_TIME_OUT = 102,
+} Status;
 
-/////// DriverServices
-struct OniDriverServices
+/** The source of the stream */
+typedef enum
 {
-	void* driverServices;
-	void (ONI_CALLBACK_TYPE* errorLoggerAppend)(void* driverServices, const char* format, va_list args);
-	void (ONI_CALLBACK_TYPE* errorLoggerClear)(void* driverServices);
-	void (ONI_CALLBACK_TYPE* log)(void* driverServices, int severity, const char* file, int line, const char* mask, const char* message);
-};
+	SENSOR_IR = 1,
+	SENSOR_COLOR = 2,
+	SENSOR_DEPTH = 3,
 
+} SensorType;
 
-#endif // _ONI_DRIVER_TYPES_H_
+/** All available formats of the output of a stream */
+typedef enum
+{
+	// Depth
+	PIXEL_FORMAT_DEPTH_1_MM = 100,
+	PIXEL_FORMAT_DEPTH_100_UM = 101,
+	PIXEL_FORMAT_SHIFT_9_2 = 102,
+	PIXEL_FORMAT_SHIFT_9_3 = 103,
+
+	// Color
+	PIXEL_FORMAT_RGB888 = 200,
+	PIXEL_FORMAT_YUV422 = 201,
+	PIXEL_FORMAT_GRAY8 = 202,
+	PIXEL_FORMAT_GRAY16 = 203,
+	PIXEL_FORMAT_JPEG = 204,
+	PIXEL_FORMAT_YUYV = 205,
+} PixelFormat;
+
+typedef enum
+{
+	DEVICE_STATE_OK 	= 0,
+	DEVICE_STATE_ERROR 	= 1,
+	DEVICE_STATE_NOT_READY 	= 2,
+	DEVICE_STATE_EOF 	= 3
+} DeviceState;
+
+typedef enum
+{
+	IMAGE_REGISTRATION_OFF				= 0,
+	IMAGE_REGISTRATION_DEPTH_TO_COLOR	= 1,
+} ImageRegistrationMode;
+
+static const int TIMEOUT_NONE = 0;
+static const int TIMEOUT_FOREVER = -1;
+
+} // namespace openni
+
+#endif // _ONI_ENUMS_H_
